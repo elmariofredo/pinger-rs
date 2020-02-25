@@ -28,10 +28,10 @@ impl Metrics {
   }
 
   fn polling(&self, metrics_collection: MetricsCollection, urls: Vec<Value>) {
-    let interval_ms = self.config["pinger"]["interval"]
+
+    let interval_ms = self.config["pinger"]["interval_ms"]
       .as_u64() // Can't parse straight to u32
-      .unwrap_or(10) as u32
-      * 1000;
+      .unwrap_or(10) as u32;
     let debug = self.config["pinger"]["debug"].as_bool().unwrap_or(true);
 
     let counter_rate_vec = metrics_collection.rate;
@@ -100,7 +100,7 @@ impl Metrics {
 
               counter_rate_vec.with_label_values(&["522", url]).inc();
             }
-            
+
           }
         }
       }
