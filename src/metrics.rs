@@ -91,7 +91,16 @@ impl Metrics {
                 println!("{}: {} - {}", dt, code, url);
               }
             }
-            Err(_) => println!("{}: Error accessing {}", dt, url),
+            
+            Err(_) => {
+
+              if debug {
+                println!("{}: Error accessing {}", dt, url);
+              }
+
+              counter_rate_vec.with_label_values(&["522", url]).inc();
+            }
+            
           }
         }
       }
