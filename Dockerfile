@@ -1,4 +1,4 @@
-FROM ekidd/rust-musl-builder as build
+FROM ekidd/rust-musl-builder:1.41.0 as build
 
 WORKDIR /usr/src/app
 
@@ -18,13 +18,14 @@ RUN cargo build --target=x86_64-unknown-linux-musl
 # build --target=x86_64-unknown-linux-musl
 #
 
-FROM alpine
+FROM alpine:3.9.5
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY --from=build /usr/src/app/target/x86_64-unknown-linux-musl/debug/pinger-rs .
-COPY --from=build /usr/src/app/config.yml .
+COPY --from=build /usr/src/app/target/x86_64-unknown-linux-musl/debug/pinger-rs /app/bin/pinger-rs
+COPY config.yml /app/config/config.yml
 
 EXPOSE 9090
 
-CMD ["./pinger-rs", "config.yml"]
+ENTRYPOINT ["/app/bin/pinger-rs"]
+CMD ["/app/config/config.yml"]
