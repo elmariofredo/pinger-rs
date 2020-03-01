@@ -6,7 +6,7 @@ COPY . .
 
 RUN sudo chown -R rust:rust .
 
-RUN cargo build --target=x86_64-unknown-linux-musl
+RUN cargo build --release --target=x86_64-unknown-linux-musl
 
 # 
 # Some other hacky way would be pre compiling cross platform and
@@ -22,7 +22,7 @@ FROM alpine:3.9.5
 
 WORKDIR /app
 
-COPY --from=build /usr/src/app/target/x86_64-unknown-linux-musl/debug/pinger-rs /app/bin/pinger-rs
+COPY --from=build /usr/src/app/target/x86_64-unknown-linux-musl/release/pinger-rs /app/bin/pinger-rs
 COPY config.yml /app/config/config.yml
 
 EXPOSE 9090
