@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: google-test-prometheus-pinger-rs
+  namespace: http-uptime
+  labels:
+    app.kubernetes.io/name: prometheus-pinger-rs
+    app.kubernetes.io/instance: google-test
+    app.kubernetes.io/managed-by: hand
+data:
+  config.yml: |
+    server:
+      port: 9090
+      host: "0.0.0.0"
+      endpoint: "/metrics"
+      health: "/admin/health"
+
+    pinger:
+      interval_ms: 200
+      metric-name: "pinger_metrics"
+      targets:
+      - "https://www.google.com"
+
+

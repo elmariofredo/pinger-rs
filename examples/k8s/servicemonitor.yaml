@@ -1,0 +1,27 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: google-test
+  labels:
+    app.kubernetes.io/name: prometheus-pinger-rs
+    app.kubernetes.io/instance: google-test
+    app.kubernetes.io/managed-by: hand
+spec:
+  endpoints:
+  - port: http
+    scheme: http
+    path: "/metrics"
+    interval: 3s
+    scrapeTimeout: 1s
+    params:
+      format:
+      - prometheus
+  jobLabel: "google-test"
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-pinger-rs
+      app.kubernetes.io/instance: google-test
+  namespaceSelector:
+    matchNames:
+      - http-uptime

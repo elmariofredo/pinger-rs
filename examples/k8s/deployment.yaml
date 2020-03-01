@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: google-test-prometheus
+  namespace: http-uptime
+  labels:
+    app.kubernetes.io/name: prometheus
+spec:
+  replicas: 3 # More replicas more concurrent checks
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus
+      app.kubernetes.io/instance: google-test
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: prometheus
+        app.kubernetes.io/instance: google-test
+    spec:
+
+      restartPolicy: Always
+      containers:
+        - name: pinger-rs
+          image: "elmariofredo/pinger-rs:v0.3"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9090
+              name: http
+          livenessProbe:
+            httpGet:
+              path: /admin/health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /admin/health
+              port: http
+          volumeMounts:
+          - mountPath: /app/config
+            name: config
+          resources:
+            requests:
+              memory: "10Mi"
+              cpu: "100m"
+            limits:
+              memory: "20Mi"
+              cpu: "100m"
+
+      volumes:
+        - name: config
+          configMap:
+            name: google-test-prometheus
